@@ -111,6 +111,11 @@ export default function TicketManagement() {
 			onClick: () => history.push("/commentmgt"),
 		},
 		{
+			label: "Đổi mật khẩu",
+			icon: "https://www.svgrepo.com/show/448957/change-password.svg",
+			onClick: () => history.push("/changepassword"), // cập nhật đường dẫn phù hợp
+		},
+		{
 			label: "Đăng xuất",
 			icon: "https://storage.googleapis.com/fe-production/images/Auth/logout.svg",
 			onClick: () => {

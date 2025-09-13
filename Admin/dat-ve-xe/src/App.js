@@ -34,6 +34,7 @@ import StationMienDong from "./components/Station/StationMienDong";
 import StationQuyNhon from "./components/Station/StationQuyNhon";
 import StationBaTri from "./components/Station/StationBaTri";
 import StationMyDinh from "./components/Station/StationMyDinh";
+import ChangePassword from "./components/UserManagement/ChangePassword";
 
 export const history = createBrowserHistory();
 
@@ -66,6 +67,7 @@ function App() {
 				<AdminTemplate path="/admin/passenger" exact Component={AdminPassenger} />
 				<HomeTemplate path="/booking" exact Component={Booking} />
 				<HomeTemplate path="/ticketmgt" exact Component={TicketManagement} />
+				<HomeTemplate path="/changepassword" exact Component={ChangePassword} />
 				<HomeTemplate path="/usermgt" exact Component={InfoManagement} />
 				<HomeTemplate path="/commentmgt" exact Component={CommentManagement} />
 				<HomeTemplate path="/booking" exact Component={Booking} />
