@@ -14,7 +14,7 @@ const paymentController = async (req1, res2) => {
 		var orderInfo = `Đặt vé xe  ${passenger}`;
 		var redirectUrl = "http://localhost:3000/payment-success";
 		var ipnUrl = "https://6d82114d0dae.ngrok-free.app/api/v1/payment/callback"; // Thay đổi URL callback
-		var amount = 1000;
+		var amount = totalAmount;
 		var requestType = "captureWallet";
 		var extraData = ""; // pass empty value if your merchant does not have stores
 

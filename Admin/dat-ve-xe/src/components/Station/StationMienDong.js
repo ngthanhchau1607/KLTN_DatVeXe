@@ -3,6 +3,7 @@ import {Input, DatePicker, Button, Table} from "antd";
 import {SearchOutlined} from "@ant-design/icons";
 import moment from "moment";
 import {Swiper, SwiperSlide} from "swiper/react";
+import {HomeOutlined} from "@ant-design/icons";
 
 import "swiper/css";
 
@@ -19,6 +20,8 @@ const StationMienDong = () => {
 		image: "https://upload.wikimedia.org/wikipedia/commons/1/1a/Ben_xe_Mien_Dong.jpg",
 		description: `Bến xe Miền Đông là bến xe khách lớn nhất và cũng là một trong những bến xe chính tại TP.HCM...`,
 	};
+
+	const stationImages = ["https://motortrip.vn/wp-content/uploads/2021/11/ben-xe-mien-dong-3.jpg", "https://cdn.xanhsm.com/2025/03/88c5259c-ben-xe-mien-dong-cu-1.jpg", "https://cdn.xanhsm.com/2025/03/d2a8fb13-ben-xe-mien-dong-cu-2.jpg", "https://cdn.xanhsm.com/2025/03/b56f7f91-ben-xe-mien-dong-cu-3.jpg"];
 
 	const popularRoutes = [
 		{key: 1, route: "Bến xe Miền Đông đi Đà Nẵng", company: "Quốc Tín", price: 300000},
@@ -53,37 +56,77 @@ const StationMienDong = () => {
 	];
 
 	return (
-		<div className="max-w-6xl mx-auto p-4 bg-white">
-			{/* Thông tin chung */}
-			<h1 className="text-3xl font-bold mb-2">{stationInfo.name}</h1>
-			<p>
-				<strong>Địa chỉ:</strong> {stationInfo.address}
-			</p>
-			<p>
-				<strong>Số điện thoại:</strong> {stationInfo.phone}
-			</p>
-			<p>
-				<strong>Giờ hoạt động:</strong> {stationInfo.hours}
-			</p>
+		<div className="max-w-6xl mx-auto p-4 bg-white mt-1">
+			{/* Breadcrumb */}
+			<div className="flex items-center text-gray-600 text-sm mb-3 gap-2">
+				<HomeOutlined className="text-lg text-gray-500" />
 
-			{/* Search Box */}
-			<div className="bg-blue-50 p-4 my-6 rounded-md shadow-sm">
-				<h2 className="text-xl font-semibold mb-4">So sánh giá và lịch trình các hãng xe ở {stationInfo.name}</h2>
-				<div className="flex flex-wrap gap-3 items-center">
-					<Input placeholder="Gõ vào nơi đi" className="w-full sm:w-1/3" />
-					<span className="text-xl">=</span>
-					<Input placeholder="Gõ vào nơi đến" className="w-full sm:w-1/3" />
-					<DatePicker defaultValue={moment()} className="w-full sm:w-1/4" />
-					<Button type="primary" icon={<SearchOutlined />} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold">
-						Tìm vé xe rẻ
-					</Button>
-				</div>
+				<a href="/" className="hover:text-blue-600 transition">
+					Trang chủ
+				</a>
+
+				<span>/</span>
+
+				<span className="font-semibold text-gray-900 ">Bến xe</span>
+
+				<span>/</span>
+
+				<span className="font-semibold text-gray-900">{stationInfo.name}</span>
 			</div>
 
+			{/* Tiêu đề */}
+			<h1 className="text-3xl font-bold mb-4">{stationInfo.name}</h1>
+
+			<p className="text-lg mb-1">
+				<strong className="font-semibold text-gray-800">Địa chỉ:</strong> {stationInfo.address}
+			</p>
+
+			<p className="text-lg mb-1">
+				<strong className="font-semibold text-gray-800">Số điện thoại:</strong> {stationInfo.phone}
+			</p>
+
+			<p className="text-lg mb-4">
+				<strong className="font-semibold text-gray-800">Giờ hoạt động:</strong> {stationInfo.hours}
+			</p>
+
 			{/* Tuyến phổ biến */}
-			<div className="my-8">
+			{/* <div className="my-8">
 				<h2 className="text-xl font-semibold mb-4">Đặt nhanh các tuyến đường từ {stationInfo.name}</h2>
 				<Table dataSource={popularRoutes} columns={columns} pagination={false} />
+			</div> */}
+
+			{/* Các dịch vụ, tiện ích */}
+			<div className="my-8">
+				<h2 className="text-xl font-semibold mb-4">Các dịch vụ, tiện ích tại bến xe Miền Đông cũ</h2>
+
+				<p className="text-gray-700 mb-4 leading-relaxed">Sau khi ngừng khai thác một số tuyến xe khách cố định, các dịch vụ và tiện ích tại bến xe Miền Đông cũ đã có nhiều thay đổi. Hiện tại, các dịch vụ chủ yếu bao gồm:</p>
+
+				<ul className="list-disc pl-6 space-y-2 text-gray-700">
+					<li>
+						<strong>Quầy vé:</strong> Thuận tiện cho khách hàng mua vé trực tiếp, thanh toán nhanh chóng.
+					</li>
+					<li>
+						<strong>Phòng chờ:</strong> Rộng rãi, thoáng mát, có ghế ngồi, quạt và wifi.
+					</li>
+					<li>
+						<strong>Khu vực giữ hành lý:</strong> Có bảo vệ túc trực thường xuyên, đảm bảo an toàn.
+					</li>
+					<li>
+						<strong>Các cửa hàng nhỏ lẻ:</strong> Cung cấp các mặt hàng thiết yếu như thuốc, thực phẩm…
+					</li>
+					<li>
+						<strong>Nhà hàng, quán ăn:</strong> Tập trung xung quanh bến xe, bán đa dạng món như bún, phở, mì, miến…
+					</li>
+					<li>
+						<strong>Dịch vụ hỗ trợ xe buýt:</strong> Điểm bán vé, cung cấp thông tin tuyến xe buýt.
+					</li>
+					<li>
+						<strong>Bãi đỗ xe:</strong> Duy trì bãi đỗ cho phương tiện cá nhân và xe buýt.
+					</li>
+					<li>
+						<strong>Nhà vệ sinh:</strong> Có khu vực phục vụ nhu cầu sinh hoạt của hành khách.
+					</li>
+				</ul>
 			</div>
 
 			{/* Banner đơn giản 1 ảnh */}
@@ -133,7 +176,13 @@ const StationMienDong = () => {
 
 						{activeTab === "review" && <p className="text-gray-600">Hiện tại chưa có đánh giá nào. Hãy là người đầu tiên đánh giá!</p>}
 
-						{activeTab === "image" && <img src={stationInfo.image} alt={stationInfo.name} className="w-full max-h-[500px] object-cover rounded-lg shadow-md" />}
+						{activeTab === "image" && (
+							<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+								{stationImages.map((img, index) => (
+									<img key={index} src={img} alt={`Ảnh ${index + 1}`} className="w-full h-40 md:h-48 object-cover rounded-lg shadow" />
+								))}
+							</div>
+						)}
 					</div>
 				</div>
 			</div>

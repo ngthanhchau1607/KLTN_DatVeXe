@@ -180,11 +180,11 @@ export default function EditTicket(props) {
 						</Select>
 					</Form.Item>
 				</Col>
-				<Col span={12}>
+				{/* <Col span={12}>
 					<Form.Item label="Ghế Đặt">
 						<Select mode="multiple" style={{width: "100%"}} disabled value={renderSeat(detailTicket)}></Select>
 					</Form.Item>
-				</Col>
+				</Col> */}
 			</Row>
 
 			<Row gutter={16}>

@@ -1,15 +1,13 @@
 import React, {useState} from "react";
-import {Button, Modal, Menu, Dropdown, message, Space, Tooltip, Popover} from "antd";
-import {UserOutlined, DownOutlined} from "@ant-design/icons";
+import {Button, Modal, Menu, Dropdown, Popover} from "antd";
+import {DownOutlined} from "@ant-design/icons";
 import _ from "lodash";
 import "../../Sass/css/Header.css";
 import Login from "../Login/Login";
 import Register from "../Register/Register";
 import {useSelector} from "react-redux";
 import {TOKEN, USER_LOGIN} from "../../util/settings/config";
-import MessengerCustomerChat from "react-messenger-customer-chat";
 import {Link} from "react-router-dom";
-import {MessengerChat} from "react-messenger-chat-plugin";
 
 import {history} from "../../App";
 
@@ -73,14 +71,29 @@ export default function Header() {
 		</Menu>
 	);
 	const renderAccount = () => {
-		if (_.isEmpty(userLogin)) {
+		const isGuest = _.isEmpty(userLogin);
+		console.log(">> renderAccount → isGuest:", isGuest);
+
+		if (isGuest) {
+			console.log(">> Rendering: Nút Đăng nhập");
 			return (
-				<Button className="btn_login" type="primary" shape="round" size={"small"} onClick={() => setModal(true)}>
+				<Button
+					className="btn_login"
+					type="primary"
+					shape="round"
+					size={"small"}
+					onClick={() => {
+						console.log(">> Clicked: Nút Đăng nhập");
+						setModal(true);
+						console.log(">> Modal should open, modal =", modal); // <-- giá trị cũ do closure
+					}}
+				>
 					<img src="https://storage.googleapis.com/fe-production/images/Auth/account-circle-fill.svg" alt height={16} width={16} />
 					Đăng nhập
 				</Button>
 			);
 		}
+		console.log(">> Rendering: Dropdown tài khoản");
 		return (
 			<Dropdown overlay={menu}>
 				<Button className="btn_login" type="primary" shape="round" size={"small"}>
@@ -139,7 +152,7 @@ export default function Header() {
 
 					{/* Login/Account */}
 					{renderAccount()}
-					<Modal title={toggle ? "Đăng nhập" : "Đăng ký"} centered open={modal} onOk={() => setModal(false)} onCancel={() => setModal(false)} footer={null}>
+					<Modal title={toggle ? "Đăng nhập" : "Đăng ký"} centered visible={modal} onOk={() => setModal(false)} onCancel={() => setModal(false)} footer={null}>
 						{toggle ? <Login toggle={toggle} setToggle={setToggle} setModal={setModal} /> : <Register toggle={toggle} setToggle={setToggle} />}
 					</Modal>
 				</div>

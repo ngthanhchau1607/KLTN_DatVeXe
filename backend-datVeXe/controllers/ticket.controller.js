@@ -681,7 +681,7 @@ const cancelTicket = async (req, res) => {
 };
 
 const bookingTicket = async (req, res) => {
-	const {note, totalAmount, userId, tripPassengerId, pointPickup, pointDropoff, listSeat, voucherId} = req.body;
+	const {note, totalAmount, userId, tripPassengerId, pointPickup, pointDropoff, listSeat, listSeat1, voucherId} = req.body;
 
 	if (!userId || !tripPassengerId || !pointPickup || !pointDropoff || !listSeat?.length) {
 		return res.status(400).json({message: "Thiếu dữ liệu đầu vào"});
@@ -712,6 +712,7 @@ const bookingTicket = async (req, res) => {
 				user_id: userId,
 				tripPassengerId,
 				voucherId: voucherId || null,
+				listSeat1: listSeat1 || [], // Lưu thông tin ghế đầy đủ
 			},
 			{transaction: t}
 		);

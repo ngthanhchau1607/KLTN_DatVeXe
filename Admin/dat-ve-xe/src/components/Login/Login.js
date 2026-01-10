@@ -123,7 +123,6 @@ export default function Login(props) {
 					newPassword: values.newPassword,
 				});
 				message.success("Đổi mật khẩu thành công! Bạn có thể đăng nhập lại.");
-				// Reset lại trạng thái
 				setIsForgotPassword(false);
 				setIsOTPSent(false);
 				setIsResetPassword(false);
@@ -239,10 +238,10 @@ export default function Login(props) {
 
 			<Form.Item>
 				<div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-					<Checkbox checked={loginFormik.values.rememberMe} onChange={(e) => loginFormik.setFieldValue("rememberMe", e.target.checked)}>
+					{/* <Checkbox checked={loginFormik.values.rememberMe} onChange={(e) => loginFormik.setFieldValue("rememberMe", e.target.checked)}>
 						Ghi nhớ
-					</Checkbox>
-					<button type="button" className="ant-btn ant-btn-link ant-btn-sm" style={{padding: 0}} onClick={() => setIsForgotPassword(true)}>
+					</Checkbox> */}
+					<button type="button" className="ant-btn ant-btn-link ant-btn-sm" style={{padding: 0, marginLeft: "auto"}} onClick={() => setIsForgotPassword(true)}>
 						Quên mật khẩu?
 					</button>
 				</div>

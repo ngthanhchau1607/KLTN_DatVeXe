@@ -125,6 +125,18 @@ export default function AdminTemplate(props) {
 									</Menu.Item>
 
 									<Menu.Item
+										key="9"
+										icon={<IdcardOutlined />}
+										style={{height: 60}}
+										onClick={() => {
+											history.push("/admin/ticket-statistic");
+											dispatch({type: CHANGE_KEY, key: "9"});
+										}}
+									>
+										Thống Kê Vé
+									</Menu.Item>
+
+									<Menu.Item
 										key="6"
 										icon={<IdcardOutlined />}
 										style={{height: 60}}

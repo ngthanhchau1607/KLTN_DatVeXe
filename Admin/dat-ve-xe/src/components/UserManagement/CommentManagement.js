@@ -73,7 +73,6 @@ export default function CommentManagement() {
 
 			message.success("Cập nhật thành công!");
 
-			// Làm mới danh sách comment + rate sau khi update
 			const [commentRes, rateRes] = await Promise.all([axios.get("http://localhost:8000/api/v1/comment"), axios.get("http://localhost:8000/api/v1/rate")]);
 			setComments(commentRes.data);
 			setRates(rateRes.data);

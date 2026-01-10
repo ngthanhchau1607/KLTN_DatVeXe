@@ -34,14 +34,12 @@ export default function AdminTicket(props) {
 	});
 	const antIcon = <LoadingOutlined style={{fontSize: 24}} spin />;
 	const renderSeat = (ticket) => {
-		if (ticket.ticketSeatId?.length > 0) {
-			return ticket?.ticketSeatId?.map((item, index) => {
-				return (
-					<div>
-						{item?.seatofticket?.name} - tầng {item?.seatofticket?.floor}
-					</div>
-				);
-			});
+		if (ticket.listSeat1?.length > 0) {
+			return ticket.listSeat1.map((seat, index) => (
+				<div key={index}>
+					Ghế {seat.name} Tầng {seat.floor}
+				</div>
+			));
 		} else {
 			return <div>Không có ghế đặt</div>;
 		}
@@ -58,45 +56,23 @@ export default function AdminTicket(props) {
 		);
 	};
 	const renderStatus = (ticket) => {
-		if (ticket.status == "pending") {
-			return (
-				<>
-					<Tag icon={<SyncOutlined spin />} color="processing">
-						Chờ Xác Nhận
-					</Tag>
-					<div className="mt-2">
-						<Button
-							className="font-light font-italic mb-2"
-							onClick={() => {
-								dispatch(confirmTicket(ticket.id));
-							}}
-						>
-							<Spin indicator={antIcon} /> Xác Nhận
-						</Button>
-						<Button
-							danger
-							onClick={() => {
-								dispatch(cancelTicketUser(ticket.id));
-							}}
-						>
-							Hủy
-						</Button>
-					</div>
-				</>
-			);
-		} else if (ticket.status == "confirm") {
+		if (ticket.status === "confirm" || ticket.status === "pending") {
 			return (
 				<Tag icon={<CheckCircleOutlined />} color="success">
-					Xác Nhận
-				</Tag>
-			);
-		} else if (ticket.status == "cancel") {
-			return (
-				<Tag icon={<CloseCircleOutlined />} color="error">
-					Đã Hủy
+					Đã đặt
 				</Tag>
 			);
 		}
+
+		if (ticket.status === "cancel") {
+			return (
+				<Tag icon={<CloseCircleOutlined />} color="error">
+					Đã hủy
+				</Tag>
+			);
+		}
+
+		return <Tag>{ticket.status}</Tag>;
 	};
 	const columns = [
 		{

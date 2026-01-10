@@ -1,12 +1,13 @@
 import React, {useState} from "react";
 import {Input, DatePicker, Button, Table} from "antd";
 import {SearchOutlined} from "@ant-design/icons";
+import {HomeOutlined} from "@ant-design/icons";
 import moment from "moment";
 
 const StationQuyNhon = () => {
 	const [activeTab, setActiveTab] = useState("price");
 
-	const banners = ["/images/banner/bn_quynhon1.jpg"]; // Bạn cần thêm ảnh banner Quy Nhơn vào thư mục public/images/banner
+	const banners = ["/images/banner/bn1.jpg", "/images/banner/bn2.jpg", "/images/banner/bn3.jpg"];
 
 	const stationInfo = {
 		name: "Bến xe Quy Nhơn",
@@ -16,6 +17,8 @@ const StationQuyNhon = () => {
 		image: "https://upload.wikimedia.org/wikipedia/commons/7/7f/Quy_Nhon_bus_station_2020.jpg",
 		description: `Bến xe Quy Nhơn là bến xe chính phục vụ khu vực Bình Định và các tỉnh lân cận, với nhiều tuyến xe khách và dịch vụ vận tải đa dạng.`,
 	};
+
+	const stationImages = ["https://cdn.xanhsm.com/2025/03/58eaac9b-ben-xe-quy-nhon-1.jpg", "https://cdn.xanhsm.com/2025/03/e9325e61-ben-xe-quy-nhon-2.jpg", "https://cdn.xanhsm.com/2025/03/523a0ef5-ben-xe-quy-nhon-3.jpg", "https://cdn.xanhsm.com/2025/03/420756a1-ben-xe-quy-nhon-4.jpg"];
 
 	const popularRoutes = [
 		{key: 1, route: "Bến xe Quy Nhơn đi Hà Nội", company: "Hạnh Cafe", price: 1000000},
@@ -50,37 +53,62 @@ const StationQuyNhon = () => {
 	];
 
 	return (
-		<div className="max-w-6xl mx-auto p-4 bg-white">
-			{/* Thông tin chung */}
-			<h1 className="text-3xl font-bold mb-2">{stationInfo.name}</h1>
-			<p>
-				<strong>Địa chỉ:</strong> {stationInfo.address}
-			</p>
-			<p>
-				<strong>Số điện thoại:</strong> {stationInfo.phone}
-			</p>
-			<p>
-				<strong>Giờ hoạt động:</strong> {stationInfo.hours}
-			</p>
+		<div className="max-w-6xl mx-auto p-4 bg-white mt-1">
+			{/* Breadcrumb */}
+			<div className="flex items-center text-gray-600 text-sm mb-3 gap-2">
+				<HomeOutlined className="text-lg text-gray-500" />
 
-			{/* Search Box */}
-			<div className="bg-blue-50 p-4 my-6 rounded-md shadow-sm">
-				<h2 className="text-xl font-semibold mb-4">So sánh giá và lịch trình các hãng xe ở {stationInfo.name}</h2>
-				<div className="flex flex-wrap gap-3 items-center">
-					<Input placeholder="Gõ vào nơi đi" className="w-full sm:w-1/3" />
-					<span className="text-xl">=</span>
-					<Input placeholder="Gõ vào nơi đến" className="w-full sm:w-1/3" />
-					<DatePicker defaultValue={moment()} className="w-full sm:w-1/4" />
-					<Button type="primary" icon={<SearchOutlined />} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold">
-						Tìm vé xe rẻ
-					</Button>
-				</div>
+				<a href="/" className="hover:text-blue-600 transition">
+					Trang chủ
+				</a>
+
+				<span>/</span>
+
+				<span className="font-semibold text-gray-900">Bến xe</span>
+
+				<span>/</span>
+
+				<span className="font-semibold text-gray-900">{stationInfo.name}</span>
 			</div>
 
-			{/* Tuyến phổ biến */}
+			{/* Tiêu đề */}
+			<h1 className="text-3xl font-bold mb-4">{stationInfo.name}</h1>
+
+			<p className="text-lg mb-1">
+				<strong className="font-semibold text-gray-800">Địa chỉ:</strong> {stationInfo.address}
+			</p>
+
+			<p className="text-lg mb-1">
+				<strong className="font-semibold text-gray-800">Số điện thoại:</strong> {stationInfo.phone}
+			</p>
+
+			<p className="text-lg mb-4">
+				<strong className="font-semibold text-gray-800">Giờ hoạt động:</strong> {stationInfo.hours}
+			</p>
+
+			{/* Các dịch vụ, tiện ích */}
 			<div className="my-8">
-				<h2 className="text-xl font-semibold mb-4">Đặt nhanh các tuyến đường từ {stationInfo.name}</h2>
-				<Table dataSource={popularRoutes} columns={columns} pagination={false} />
+				<h2 className="text-xl font-semibold mb-4">Khám phá những dịch vụ, tiện ích tại bến xe Quy Nhơn</h2>
+
+				<p className="text-gray-700 mb-4 leading-relaxed">Điểm trung chuyển bến xe Quy Nhơn có đầy đủ dịch vụ, tiện ích nhằm mang đến trải nghiệm thoải mái và thuận tiện cho hành khách. Dưới đây là một số dịch vụ, tiện ích được bến xe phục vụ:</p>
+
+				<ul className="list-disc pl-6 space-y-2 text-gray-700">
+					<li>
+						<strong>Cửa hàng tiện lợi:</strong> Khu vực nhà chờ của bến xe có các quầy bán đồ ăn nhằm phục vụ hành khách có nhu cầu ăn uống trong thời gian chờ xe.
+					</li>
+					<li>
+						<strong>Quầy vé:</strong> Bến xe có nhiều quầy vé của các nhà xe hoạt động từ Quy Nhơn đi các tỉnh, giúp hành khách mua vé nhanh chóng và thuận tiện.
+					</li>
+					<li>
+						<strong>Nhà vệ sinh:</strong> Được chia riêng khu vực nam – nữ, đảm bảo sự thoải mái và tiện nghi cho hành khách.
+					</li>
+					<li>
+						<strong>Máy rút tiền tự động (ATM):</strong> Gần bến xe có máy ATM giúp hành khách dễ dàng rút tiền và thực hiện các giao dịch ngân hàng.
+					</li>
+					<li>
+						<strong>Khu vực đỗ xe:</strong> Rộng rãi, đủ sức chứa nhiều phương tiện như xe khách, xe tải nhỏ, xe máy và ô tô.
+					</li>
+				</ul>
 			</div>
 
 			{/* Banner đơn giản 1 ảnh */}
@@ -130,7 +158,13 @@ const StationQuyNhon = () => {
 
 						{activeTab === "review" && <p className="text-gray-600">Hiện tại chưa có đánh giá nào. Hãy là người đầu tiên đánh giá!</p>}
 
-						{activeTab === "image" && <img src={stationInfo.image} alt={stationInfo.name} className="w-full max-h-[500px] object-cover rounded-lg shadow-md" />}
+						{activeTab === "image" && (
+							<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+								{stationImages.map((img, index) => (
+									<img key={index} src={img} alt={`Bến xe Quy Nhơn ${index + 1}`} className="w-full h-40 md:h-48 object-cover rounded-lg shadow" />
+								))}
+							</div>
+						)}
 					</div>
 				</div>
 			</div>

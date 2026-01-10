@@ -215,6 +215,7 @@ function StepBookingSeat(props) {
 								>
 									Tiếp tục
 								</Button>
+								
 							</div>
 						</div>
 					</div>

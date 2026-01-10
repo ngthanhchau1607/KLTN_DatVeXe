@@ -33,6 +33,40 @@ const getAllTripByUser = async (req, res) => {
 		res.status(500).send(error);
 	}
 };
+const getTripByDate = async (req, res) => {
+	const {date} = req.body; // yyyy-mm-dd
+
+	if (!date) {
+		return res.status(400).json({message: "Thiếu date"});
+	}
+
+	try {
+		const [result] = await sequelize.query(
+			`
+            SELECT 
+                trips.*,
+                fromSta.province AS fromProvince,
+                toSta.province AS toProvince
+            FROM trips
+            INNER JOIN stations AS fromSta ON trips.fromStation = fromSta.id
+            INNER JOIN stations AS toSta ON trips.toStation = toSta.id
+            WHERE DATE(trips.startTime) = :date
+            `,
+			{
+				replacements: {date},
+				type: sequelize.QueryTypes.SELECT,
+			}
+		);
+
+		res.status(200).json({
+			total: result.length,
+			trips: result,
+		});
+	} catch (error) {
+		console.error("getTripByDate error:", error);
+		res.status(500).json({message: "Lỗi khi tìm chuyến theo ngày"});
+	}
+};
 const getAllTrip = async (req, res) => {
 	try {
 		const tripList = await Trip.findAll({
@@ -114,4 +148,5 @@ module.exports = {
 	deleteTrip,
 	updateTrip,
 	getAllTripByUser,
+	getTripByDate,
 };

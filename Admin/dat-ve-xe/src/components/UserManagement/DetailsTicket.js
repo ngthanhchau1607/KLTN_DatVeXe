@@ -11,6 +11,7 @@ export default function DetailsTicket({ticket}) {
 	const [loading, setLoading] = useState(true);
 
 	const passengerId = ticket.tripPassengerTicket.passenger.id;
+
 	const userId = ticket.user.id;
 
 	useEffect(() => {
@@ -39,6 +40,8 @@ export default function DetailsTicket({ticket}) {
 
 		fetchData();
 	}, [ticket]);
+
+	console.log("Check ticket", ticket);
 
 	const handleSubmit = async () => {
 		try {
@@ -71,9 +74,11 @@ export default function DetailsTicket({ticket}) {
 	};
 
 	const renderSeat = () => {
-		return ticket.ticketSeatId.map((item, index) => (
+		if (!ticket.listSeat1 || ticket.listSeat1.length === 0) return "Chưa chọn ghế";
+
+		return ticket.listSeat1.map((seat, index) => (
 			<div key={index}>
-				{item?.seatofticket?.name}, tầng {item?.seatofticket?.floor}
+				Ghế {seat.name} - Vị trí Tầng {seat.floor}
 			</div>
 		));
 	};
@@ -84,7 +89,7 @@ export default function DetailsTicket({ticket}) {
 			<Section title="Thông tin người đặt">
 				<Item label="Họ tên" value={ticket.user.name} />
 				<Item label="Số điện thoại" value={ticket.user.numberPhone} />
-				<Item label="Thời gian đặt vé" value={moment(ticket.createAt).format("DD-MM-YYYY HH:mm:ss")} />
+				{/* <Item label="Thời gian đặt vé" value={moment(ticket.createAt).format("DD-MM-YYYY HH:mm:ss")} /> */}
 			</Section>
 
 			{/* --- Thông tin chuyến đi --- */}

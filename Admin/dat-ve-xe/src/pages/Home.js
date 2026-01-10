@@ -231,46 +231,47 @@ export default function Home() {
 				</div>
 				<div className="home_slide_content5" id="station">
 					<h2 className="home_slide_title mt-5">Bến xe nổi bật</h2>
+
 					<div className="grid grid-cols-4 gap-20">
-						<a
-							href="/station/miendong"
+						<Link
+							to="/station/miendong"
 							style={{
 								backgroundImage: 'url("https://storage.googleapis.com/fe-production/images/bx-mien-dong.jpg")',
 							}}
 							className="BusStationCard__Wrapper-sc-759o96-0 kKZSxH lazyloaded"
 						>
 							<header className="BusStationCard__Header-sc-759o96-1 iSiVXT">Bến xe Miền Đông</header>
-						</a>
+						</Link>
 
-						<a
-							href="/station/quynhon"
+						<Link
+							to="/station/quynhon"
 							style={{
 								backgroundImage: 'url("https://statics.vinwonders.com/ben-xe-quy-nhon-2_1705132243.jpeg")',
 							}}
 							className="BusStationCard__Wrapper-sc-759o96-0 kKZSxH lazyloaded"
 						>
 							<header className="BusStationCard__Header-sc-759o96-1 iSiVXT">Bến xe Quy Nhơn</header>
-						</a>
+						</Link>
 
-						<a
-							href="/station/batri"
+						<Link
+							to="/station/batri"
 							style={{
 								backgroundImage: 'url("https://tse4.mm.bing.net/th/id/OIP.WfgvNL2NKblTAF20FnoROQHaEL?pid=Api&P=0&h=180")',
 							}}
 							className="BusStationCard__Wrapper-sc-759o96-0 kKZSxH lazyloaded"
 						>
 							<header className="BusStationCard__Header-sc-759o96-1 iSiVXT">Bến xe Ba Tri</header>
-						</a>
+						</Link>
 
-						<a
-							href="/station/mydinh"
+						<Link
+							to="/station/mydinh"
 							style={{
 								backgroundImage: 'url("https://storage.googleapis.com/fe-production/images/bx-my-dinh.jpg")',
 							}}
 							className="BusStationCard__Wrapper-sc-759o96-0 kKZSxH lazyloaded"
 						>
 							<header className="BusStationCard__Header-sc-759o96-1 iSiVXT">Bến xe Mỹ Đình</header>
-						</a>
+						</Link>
 					</div>
 				</div>
 			</div>

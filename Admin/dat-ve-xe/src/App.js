@@ -51,12 +51,15 @@ import Endow2 from "./components/Endow/Endow2";
 import Endow3 from "./components/Endow/Endow3";
 import Endow4 from "./components/Endow/Endow4";
 import AdminVoucher from "./pages/Admin/AdminVoucher";
+import AdminTicketStatics from "./pages/Admin/AdminTicketStatics";
+import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
 
 export const history = createBrowserHistory();
 
 function App() {
 	return (
 		<Router history={history}>
+			<ScrollToTop />
 			<AlertAll />
 			<ModalInfo />
 			<DrawerForm />
@@ -90,6 +93,7 @@ function App() {
 				<HomeTemplate path="/endow4" exact Component={Endow4} />
 
 				<AdminTemplate path="/admin/ticket" exact Component={AdminTicket} />
+				<AdminTemplate path="/admin/ticket-statistic" exact Component={AdminTicketStatics} />
 				<AdminTemplate path="/admin/vehicle" exact Component={AdminVehicle} />
 				<AdminTemplate path="/admin/trip" exact Component={AdminTrip} />
 				<AdminTemplate path="/admin/station" exact Component={AdminStation} />

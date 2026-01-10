@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {Input, DatePicker, Button, Table} from "antd";
 import {SearchOutlined} from "@ant-design/icons";
+import {HomeOutlined} from "@ant-design/icons";
 import moment from "moment";
 import "swiper/css";
 
@@ -51,38 +52,38 @@ const StationBaTri = () => {
 	];
 
 	return (
-		<div className="max-w-6xl mx-auto p-4 bg-white">
-			{/* Thông tin chung */}
-			<h1 className="text-3xl font-bold mb-2">{stationInfo.name}</h1>
-			<p>
-				<strong>Địa chỉ:</strong> {stationInfo.address}
-			</p>
-			<p>
-				<strong>Số điện thoại:</strong> {stationInfo.phone}
-			</p>
-			<p>
-				<strong>Giờ hoạt động:</strong> {stationInfo.hours}
-			</p>
+		<div className="max-w-6xl mx-auto p-4 bg-white mt-1">
+			{/* Breadcrumb */}
+			<div className="flex items-center text-gray-600 text-sm mb-3 gap-2">
+				<HomeOutlined className="text-lg text-gray-500" />
 
-			{/* Search Box */}
-			<div className="bg-blue-50 p-4 my-6 rounded-md shadow-sm">
-				<h2 className="text-xl font-semibold mb-4">So sánh giá và lịch trình các hãng xe ở {stationInfo.name}</h2>
-				<div className="flex flex-wrap gap-3 items-center">
-					<Input placeholder="Gõ vào nơi đi" className="w-full sm:w-1/3" />
-					<span className="text-xl">=</span>
-					<Input placeholder="Gõ vào nơi đến" className="w-full sm:w-1/3" />
-					<DatePicker defaultValue={moment()} className="w-full sm:w-1/4" />
-					<Button type="primary" icon={<SearchOutlined />} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold">
-						Tìm vé xe rẻ
-					</Button>
-				</div>
+				<a href="/" className="hover:text-blue-600 transition">
+					Trang chủ
+				</a>
+
+				<span>/</span>
+
+				<span className="font-semibold text-gray-900">Bến xe</span>
+
+				<span>/</span>
+
+				<span className="font-semibold text-gray-900">{stationInfo.name}</span>
 			</div>
 
-			{/* Tuyến phổ biến */}
-			<div className="my-8">
-				<h2 className="text-xl font-semibold mb-4">Đặt nhanh các tuyến đường từ {stationInfo.name}</h2>
-				<Table dataSource={popularRoutes} columns={columns} pagination={false} />
-			</div>
+			{/* Tiêu đề */}
+			<h1 className="text-3xl font-bold mb-4">{stationInfo.name}</h1>
+
+			<p className="text-lg mb-1">
+				<strong className="font-semibold text-gray-800">Địa chỉ:</strong> {stationInfo.address}
+			</p>
+
+			<p className="text-lg mb-1">
+				<strong className="font-semibold text-gray-800">Số điện thoại:</strong> {stationInfo.phone}
+			</p>
+
+			<p className="text-lg mb-4">
+				<strong className="font-semibold text-gray-800">Giờ hoạt động:</strong> {stationInfo.hours}
+			</p>
 
 			{/* Banner đơn giản */}
 			<div className="my-8">

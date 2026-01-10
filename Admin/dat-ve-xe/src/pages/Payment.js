@@ -81,6 +81,22 @@ export default function Payment(props) {
 	const handleChangeSelect = (e) => {
 		setTypePay(e.target.value);
 	};
+
+	useEffect(() => {
+		if (ticketBooking) {
+			localStorage.setItem("ticketBooking", JSON.stringify(ticketBooking));
+		}
+	}, [ticketBooking]);
+	useEffect(() => {
+		const storedBooking = localStorage.getItem("ticketBooking");
+		if (storedBooking) {
+			dispatch({
+				type: TICKET_BOOKING,
+				ticketBooking: JSON.parse(storedBooking),
+			});
+		}
+	}, []);
+
 	useEffect(() => {
 		dispatch(getDetailTripPassengerAction(ticketBooking.tripPassengerId));
 		dispatch(getDetailTimePointDropTripAction(ticketBooking.pointDropoff));
@@ -106,6 +122,7 @@ export default function Payment(props) {
 			pointPickup: ticketBooking?.pointPickup,
 			pointDropoff: ticketBooking?.pointDropoff,
 			listSeat: (ticketBooking?.listSeat || []).map((seat) => ({id: seat.id})),
+			listSeat1: ticketBooking?.listSeat || [],
 			passengerName: tripPassengerDetail?.passenger?.name || "",
 			voucherId: ticketBooking?.voucherId || null, // thêm voucherId đây
 		};
@@ -134,6 +151,13 @@ export default function Payment(props) {
 			console.error("Lỗi khi tạo giao dịch MoMo:", error);
 			message.error("Thanh toán thất bại");
 		}
+	};
+
+	const renderSelectedSeats = () => {
+		const seats = ticketBooking?.listSeat1 || ticketBooking?.listSeat || [];
+		if (!seats.length) return "Chưa chọn ghế";
+
+		return seats.map((seat) => `Ghế ${seat.name}`).join(", ");
 	};
 
 	const formatTime = (time) => moment(time, "HH:mm:ss").format("HH:mm");
@@ -291,10 +315,15 @@ export default function Payment(props) {
 										Sửa
 									</Button>
 								</div>
+
 								<div style={{whiteSpace: "pre-wrap", marginBottom: 12}}>
 									<Text strong>{formatTime(PointDropDetail?.time)}</Text> - <Text>{moment(tripPassengerDetail?.trip?.startTime).format("DD-MM-YYYY")}</Text> <div>{PointDropDetail?.point?.name}</div>
 								</div>
 
+								<div>
+									<Text strong>Ghế đã chọn: </Text>
+									<Text>{renderSelectedSeats()}</Text>
+								</div>
 								<Divider />
 
 								<Space size="middle" className="mb-4" style={{width: "100% ,marginBottom: 16"}}>

@@ -34,6 +34,10 @@ module.exports = (sequelize, DataTypes) => {
 					key: "id",
 				},
 			},
+			listSeat1: {
+				type: DataTypes.JSON, // kiểu JSON lưu array ghế đầy đủ
+				allowNull: true,
+			},
 		},
 		{
 			sequelize,

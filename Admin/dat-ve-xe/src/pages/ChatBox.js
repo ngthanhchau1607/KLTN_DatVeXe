@@ -1,5 +1,13 @@
 import React, {useState, useRef, useEffect} from "react";
 
+// Gợi ý câu hỏi
+const suggestedQuestions = ["Chính sách hoàn/hủy vé như thế nào?", "Các chương trình khuyến mãi?", "Lịch trình chuyến xe ngày mai?"];
+
+// Câu trả lời cứng cho câu 1
+const predefinedAnswers = {
+	"Chính sách hoàn/hủy vé như thế nào?": "Bạn có thể hoàn hoặc hủy vé trước 24h so với giờ khởi hành, phí hoàn/hủy tùy từng loại vé. Vui lòng liên hệ hotline 0899 897 394 để được hỗ trợ chi tiết.",
+};
+
 const ChatBox = () => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [showChatOptions, setShowChatOptions] = useState(false);
@@ -8,96 +16,234 @@ const ChatBox = () => {
 	const [isTyping, setIsTyping] = useState(false);
 	const messagesEndRef = useRef(null);
 
-	const handleToggleChatOptions = () => {
-		setShowChatOptions((prev) => !prev);
-	};
-
-	const toggleChat = () => {
-		setIsOpen((prev) => !prev);
-		setShowChatOptions(false);
-	};
+	const SYSTEM_PROMPT = ``;
 
 	const scrollToBottom = () => {
 		messagesEndRef.current?.scrollIntoView({behavior: "smooth"});
 	};
 
 	useEffect(() => {
+		if (isOpen && messages.length === 0) {
+			setMessages([
+				{
+					fromUser: false,
+					text: "👋 Tôi có thể giúp gì được bạn?\n⏰ Thường trả lời trong vòng 1 giờ",
+				},
+			]);
+		}
+	}, [isOpen]);
+
+	useEffect(() => {
 		scrollToBottom();
 	}, [messages, isTyping]);
 
-	const handleSend = async () => {
-		if (input.trim()) {
-			const newMessage = {fromUser: true, text: input};
-			setMessages((prev) => [...prev, newMessage]);
-			setInput("");
-			setIsTyping(true);
+	const bannedWords = ["ngu", "đồ chó", "đm", "vcl"]; // thêm các từ cần lọc
 
-			try {
-				const response = await fetch("http://localhost:8000/api/v1/openai/chat", {
+	// Gửi tin nhắn lên backend (hoặc không nếu có predefined answer)
+	const handleSend = async (customMessage) => {
+		const msg = customMessage || input;
+		if (!msg.trim()) return;
+
+		// ---- KIỂM TRA TỪ NGỮ BẬY BẠ ----
+		const msgLower = msg.toLowerCase();
+		const hasBannedWord = bannedWords.some((word) => msgLower.includes(word));
+
+		if (hasBannedWord) {
+			setIsTyping(true); // bật animation "đang nghĩ"
+			setTimeout(() => {
+				setMessages((prev) => [...prev, {fromUser: false, text: "⚠️ Vui lòng không sử dụng từ ngữ không phù hợp!"}]);
+				setInput(""); // xóa input của người dùng
+				setIsTyping(false); // tắt animation "đang nghĩ"
+			}, 2000); // delay 2 giây
+			return; // dừng xử lý tiếp
+		}
+
+		const userMessage = {fromUser: true, text: msg};
+		setMessages((prev) => [...prev, userMessage]);
+		setInput("");
+		setIsTyping(true);
+
+		try {
+			// Nếu có câu trả lời cứng thì hiển thị luôn
+			if (predefinedAnswers[msg]) {
+				setTimeout(() => {
+					const botMessage = {fromUser: false, text: predefinedAnswers[msg]};
+					setMessages((prev) => [...prev, botMessage]);
+					setIsTyping(false);
+				}, 500); // delay nhỏ để animation typing
+				return;
+			}
+
+			// Trường hợp câu hỏi thứ 2: Các chương trình khuyến mãi
+			if (msg === "Các chương trình khuyến mãi?") {
+				const response = await fetch("http://localhost:8000/api/v1/voucher");
+				if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+				const data = await response.json();
+
+				const now = new Date();
+
+				// Lọc voucher còn hiệu lực
+				const activeVouchers = data.data.filter((v) => {
+					const start = new Date(v.startTime);
+					const end = new Date(v.endTime);
+					return now >= start && now <= end;
+				});
+
+				const replyText = activeVouchers.length > 0 ? "Các chương trình khuyến mãi hiện có:\n" + activeVouchers.map((v) => `- Mã: ${v.code}, Áp dụng: ${new Date(v.startTime).toLocaleDateString()} - ${new Date(v.endTime).toLocaleDateString()}, Giảm: ${v.discountValue}%`).join("\n") : "Hiện tại không có chương trình khuyến mãi nào hoạt động.";
+
+				setTimeout(() => {
+					setMessages((prev) => [...prev, {fromUser: false, text: replyText}]);
+					setIsTyping(false);
+				}, 3000); // delay 1.5s để simulate typing
+				return;
+			}
+
+			if (msg === "Lịch trình chuyến xe ngày mai?") {
+				const today = new Date();
+				const tomorrow = new Date(today);
+				tomorrow.setDate(today.getDate() + 1);
+
+				const yyyy = tomorrow.getFullYear();
+				const mm = String(tomorrow.getMonth() + 1).padStart(2, "0");
+				const dd = String(tomorrow.getDate()).padStart(2, "0");
+				const dateStr = `${yyyy}-${mm}-${dd}`;
+
+				console.log("Hôm nay:", today.toLocaleDateString("vi-VN"));
+				console.log("Ngày mai là:", dateStr);
+
+				fetch("http://localhost:8000/api/v1/trips/tripbydate", {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
 					},
-					body: JSON.stringify({message: input}),
-				});
+					body: JSON.stringify({date: dateStr}),
+				})
+					.then((res) => res.json())
+					.then((data) => {
+						let replyText = "";
 
-				if (!response.ok) {
-					throw new Error(`HTTP error! status: ${response.status}`);
-				}
+						if (!data.trips || (Array.isArray(data.trips) && data.trips.length === 0)) {
+							replyText = "Ngày mai không có chuyến đi nào.";
+						} else {
+							const tripsArray = Array.isArray(data.trips) ? data.trips : [data.trips];
+							const tripMessages = tripsArray.map((trip) => `Ngày mai chúng ta sẽ có chuyến đi từ ${trip.fromProvince} đến ${trip.toProvince}.`);
+							replyText = tripMessages.join("\n");
+						}
 
-				const data = await response.json();
+						// **Thêm botMessage vào state để hiển thị chat**
+						// delay 5s trước khi hiển thị
+						setTimeout(() => {
+							setMessages((prev) => [...prev, {fromUser: false, text: replyText}]);
+							setIsTyping(false);
+						}, 5000);
+					})
+					.catch((err) => {
+						console.error("Lỗi khi gọi API:", err);
+						setMessages((prev) => [...prev, {fromUser: false, text: "Có lỗi khi lấy lịch trình chuyến xe ngày mai."}]);
+						setIsTyping(false);
+					});
 
-				// Giả sử API trả về { reply: "..." }
+				return;
+			}
+
+			// Nếu tin nhắn có từ "hôm nay"
+			if (msg.toLowerCase().includes("hôm nay")) {
+				const today = new Date();
+
+				const yyyy = today.getFullYear();
+				const mm = String(today.getMonth() + 1).padStart(2, "0");
+				const dd = String(today.getDate()).padStart(2, "0");
+				const dateStr = `${yyyy}-${mm}-${dd}`;
+
+				console.log("Ngày hôm nay là:", dateStr);
+
+				fetch("http://localhost:8000/api/v1/trips/tripbydate", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({date: dateStr}),
+				})
+					.then((res) => res.json())
+					.then((data) => {
+						let replyText = "";
+
+						if (!data.trips || (Array.isArray(data.trips) && data.trips.length === 0)) {
+							replyText = "Hôm nay không có chuyến đi nào.";
+						} else {
+							const tripsArray = Array.isArray(data.trips) ? data.trips : [data.trips];
+							const tripMessages = tripsArray.map((trip) => `Hôm nay chúng ta sẽ có chuyến đi từ ${trip.fromProvince} đến ${trip.toProvince}.`);
+							replyText = tripMessages.join("\n");
+						}
+
+						// gửi reply vào chatbox
+						setTimeout(() => {
+							setMessages((prev) => [...prev, {fromUser: false, text: replyText}]);
+							setIsTyping(false);
+						}, 5000);
+					})
+					.catch((err) => {
+						console.error("Lỗi khi gọi API:", err);
+						setMessages((prev) => [...prev, {fromUser: false, text: "Có lỗi khi lấy lịch trình chuyến đi hôm nay."}]);
+						setIsTyping(false);
+					});
+
+				return;
+			}
+
+			// Gửi lên backend
+			const fullMessage = `${SYSTEM_PROMPT}\n\nUser: ${msg}\nAssistant:`;
+			const response = await fetch("http://localhost:8000/api/v1/openai/chat", {
+				method: "POST",
+				headers: {"Content-Type": "application/json"},
+				body: JSON.stringify({message: fullMessage}),
+			});
+
+			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+			const data = await response.json();
+
+			// Delay 3 giây để simulate AI "đang nghĩ"
+			setTimeout(() => {
 				const botReply = {
 					fromUser: false,
 					text: data.reply || "Xin lỗi, tôi không hiểu câu hỏi của bạn.",
 				};
-
 				setMessages((prev) => [...prev, botReply]);
-			} catch (error) {
-				console.error("Error fetching bot reply:", error);
-				setMessages((prev) => [
-					...prev,
-					{
-						fromUser: false,
-						text: "Có lỗi xảy ra. Vui lòng thử lại sau.",
-					},
-				]);
-			} finally {
 				setIsTyping(false);
-			}
+			}, 6000);
+		} catch (error) {
+			console.error("Error fetching bot reply:", error);
+			setMessages((prev) => [...prev, {fromUser: false, text: "Có lỗi xảy ra. Vui lòng thử lại sau."}]);
+			setIsTyping(false);
 		}
 	};
+
+	// Khi người dùng click vào câu hỏi gợi ý
+	const handleSuggestedQuestion = (question) => {
+		handleSend(question);
+	};
+
+	const handleToggleChatOptions = () => setShowChatOptions((prev) => !prev);
+	const toggleChat = () => {
+		setIsOpen((prev) => !prev);
+		setShowChatOptions(false);
+	};
+
 	return (
 		<div className="fixed bottom-20 left-5 z-50 w-80 font-sans flex flex-col items-start">
-			{/* 3 icon chat options với chữ nằm ngang */}
+			{/* Chat options */}
 			{showChatOptions && (
 				<div className="mb-3 flex flex-col gap-3 w-full">
-					{/* Messenger */}
-					<a
-						href="https://m.me/yourpage" // Thay bằng link Messenger của bạn
-						target="_blank"
-						rel="noopener noreferrer"
-						className="flex items-center gap-3 bg-white hover:bg-gray-100 text-gray-900 rounded-lg px-4 py-3 shadow-lg transition"
-						title="Chat với chúng tôi qua Messenger"
-					>
+					<a href="https://www.facebook.com/gonai.xombac/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white hover:bg-gray-100 text-gray-900 rounded-lg px-4 py-3 shadow-lg transition" title="Chat với chúng tôi qua Messenger">
 						<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Facebook_Messenger_logo_2018.svg/2048px-Facebook_Messenger_logo_2018.svg.png" alt="Messenger Logo" className="w-10 h-10 flex-shrink-0" />
 						<span className="font-medium text-base">Chat với chúng tôi qua Messenger</span>
 					</a>
 
-					{/* Zalo */}
-					<a
-						href="https://zalo.me/yourid" // Thay bằng link Zalo của bạn
-						target="_blank"
-						rel="noopener noreferrer"
-						className="flex items-center gap-3 bg-white hover:bg-gray-100 text-gray-900 rounded-lg px-4 py-3 shadow-lg transition"
-						title="Chat với chúng tôi qua Zalo"
-					>
+					<span className="flex items-center gap-3 bg-white hover:bg-gray-100 text-gray-900 rounded-lg px-4 py-3 shadow-lg transition cursor-default" title="Chat với chúng tôi qua Zalo 0899897394">
 						<img src="https://cdn.haitrieu.com/wp-content/uploads/2022/01/Logo-Zalo-Arc.png" alt="Zalo Logo" className="w-10 h-10 flex-shrink-0" />
-						<span className="font-medium text-base">Chat với chúng tôi qua Zalo</span>
-					</a>
+						<span className="font-medium text-base">Chat với chúng tôi qua Zalo 0899897394</span>
+					</span>
 
-					{/* Chatbot tự động */}
 					<button
 						onClick={() => {
 							setIsOpen(true);
@@ -112,7 +258,7 @@ const ChatBox = () => {
 				</div>
 			)}
 
-			{/* Nút mở chat chính (nút tròn lớn) */}
+			{/* Nút mở chat */}
 			{!isOpen && (
 				<button onClick={handleToggleChatOptions} className="bg-blue-600 hover:bg-blue-700 w-16 h-16 rounded-full flex items-center justify-center shadow-xl border-4 border-white focus:outline-none transition duration-200" title="Chat">
 					<svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" width="30" height="30">
@@ -126,15 +272,19 @@ const ChatBox = () => {
 				<div className="bg-white shadow-2xl rounded-xl overflow-hidden border border-gray-300 flex flex-col h-[500px] w-full max-w-md mt-4">
 					{/* Header */}
 					<div className="bg-blue-600 text-white px-4 py-3 flex justify-between items-center">
-						<span className="font-semibold text-lg flex items-center gap-2">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" width="20" height="20">
-								<path d="M20 2H4a2 2 0 0 0-2 2v14l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM6 9h12v2H6V9zm0-3h12v2H6V6z" />
-							</svg>
-							Chatbot tự động
-						</span>
+						<span className="font-semibold text-lg flex items-center gap-2">Chatbot tự động</span>
 						<button onClick={toggleChat} className="w-8 h-8 flex items-center justify-center rounded-full bg-white text-gray-700 hover:bg-gray-200 hover:text-gray-900 transition focus:outline-none shadow-md" title="Đóng chat">
 							<span className="text-xl font-bold select-none">&times;</span>
 						</button>
+					</div>
+
+					{/* Suggested questions */}
+					<div className="flex flex-col gap-2 px-3 py-2 bg-gray-50 border-b border-gray-200">
+						{suggestedQuestions.map((q, idx) => (
+							<button key={idx} className="bg-blue-100 text-blue-800 px-3 py-2 rounded-lg text-sm hover:bg-blue-200 transition" onClick={() => handleSuggestedQuestion(q)}>
+								{q}
+							</button>
+						))}
 					</div>
 
 					{/* Nội dung chat */}
@@ -148,11 +298,11 @@ const ChatBox = () => {
 										</svg>
 									</div>
 								)}
-
 								<div className={`px-4 py-2 rounded-xl text-sm max-w-[75%] leading-relaxed ${msg.fromUser ? "bg-blue-600 text-white rounded-br-none" : "bg-blue-100 text-gray-800 rounded-bl-none"}`}>{msg.text}</div>
 							</div>
 						))}
 
+						{/* Typing indicator */}
 						{isTyping && (
 							<div className="flex justify-start items-center gap-2">
 								<div className="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center">

@@ -1,4 +1,5 @@
 import {useEffect, useState} from "react";
+import axios from "axios";
 import {Card, Button, Checkbox, Slider, message, Rate} from "antd";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Remove from "@mui/icons-material/Remove";
@@ -12,6 +13,40 @@ export default function FilterTrips(props) {
 	let {listTripPassenger, originalListTripPassenger} = useSelector((state) => state.BookingReducer);
 
 	let arrFilterPassenger = _.uniqBy(originalListTripPassenger, "passengerId");
+
+	useEffect(() => {
+		console.log("📦 originalListTripPassenger:", originalListTripPassenger);
+
+		console.table(
+			originalListTripPassenger?.map((trip) => ({
+				tripId: trip.tripId,
+				passengerId: trip.passengerId,
+				startTime: trip.startTime,
+				price: trip.passenger?.price,
+			}))
+		);
+	}, [originalListTripPassenger]);
+
+	const getTripSeatsByTripId = async (tripId) => {
+		try {
+			const res = await axios.get(`http://localhost:8000/api/v1/tripseat/${tripId}`);
+
+			// Lọc ra những ghế còn trống
+			const availableSeats = res.data.filter((seat) => seat.status === "available");
+
+			console.log("📊 Số ghế trống:", availableSeats.length);
+
+			// Trả về cả danh sách ghế và số ghế trống
+			return {
+				seats: res.data,
+				availableSeatsCount: availableSeats.length,
+				availableSeats: availableSeats,
+			};
+		} catch (error) {
+			console.error("❌ Lỗi lấy TripSeat:", error);
+			throw error;
+		}
+	};
 
 	useEffect(() => {
 		if (props.tripIds && props.tripIds.length > 0) {
@@ -67,58 +102,70 @@ export default function FilterTrips(props) {
 	const [gheTrong, setGheTrong] = useState(1);
 	const [selectedPassengers, setSelectedPassengers] = useState([]);
 
-	// Lọc dữ liệu mỗi khi filters hoặc dữ liệu gốc thay đổi
 	useEffect(() => {
-		const {timeRange, priceRange, minEmptySeats, passengerIds, seatType, rating} = filters;
+		const filterTrips = async () => {
+			const {timeRange, priceRange, minEmptySeats, passengerIds, seatType, rating} = filters;
 
-		let filtered = originalListTripPassenger;
+			let filtered = [...originalListTripPassenger];
 
-		// 1. Lọc theo khoảng thời gian
-		if (timeRange) {
-			filtered = filtered.filter((trip) => {
-				if (!trip.startTime) return false;
-				return trip.startTime >= timeRange.start && trip.startTime <= timeRange.end;
+			// 1. Lọc giờ đi
+			if (timeRange) {
+				filtered = filtered.filter((trip) => trip.startTime && trip.startTime >= timeRange.start && trip.startTime <= timeRange.end);
+			}
+
+			// 2. Lọc giá
+			if (priceRange) {
+				const [minPrice, maxPrice] = priceRange;
+				filtered = filtered.filter((trip) => trip.passenger?.price >= minPrice && trip.passenger?.price <= maxPrice);
+			}
+
+			// 3. Lọc nhà xe
+			if (passengerIds.length > 0) {
+				filtered = filtered.filter((trip) => passengerIds.includes(trip.passengerId));
+			}
+
+			// 4. Lọc loại ghế
+			if (seatType) {
+				filtered = filtered.filter((trip) => trip.vehicle?.type === seatType);
+			}
+
+			// 5. Lọc đánh giá
+			if (rating) {
+				filtered = filtered.filter((trip) => {
+					const rates = trip.passenger?.passengerRate || [];
+					const avg = rates.reduce((s, r) => s + r.numberRate, 0) / (rates.length || 1);
+					return avg >= rating;
+				});
+			}
+
+			// 🚨 6. LỌC THEO SỐ GHẾ TRỐNG (CALL API)
+			if (minEmptySeats > 1) {
+				const results = await Promise.all(
+					filtered.map(async (trip) => {
+						try {
+							const {availableSeatsCount} = await getTripSeatsByTripId(trip.tripId);
+							trip.availableSeats = availableSeatsCount; // gắn thêm thông tin ghế trống
+
+							return availableSeatsCount >= minEmptySeats ? trip : null;
+						} catch (error) {
+							return null;
+						}
+					})
+				);
+
+				filtered = results.filter(Boolean);
+			}
+
+			// ✅ Update redux
+			dispatch({
+				type: "GET_TRIP_PASSENGER",
+				listTripPassenger: filtered,
 			});
-		}
+		};
 
-		// 2. Lọc theo giá vé
-		if (priceRange) {
-			const [minPrice, maxPrice] = priceRange;
-			filtered = filtered.filter((trip) => trip.passenger?.price >= minPrice && trip.passenger?.price <= maxPrice);
+		if (originalListTripPassenger?.length > 0) {
+			filterTrips();
 		}
-
-		// 3. Lọc theo số ghế trống
-		if (minEmptySeats > 1) {
-			filtered = filtered.filter((trip) => {
-				const emptySeats = trip.vehicle?.seatVehicle.filter((seat) => seat.status === "chưa đặt").length || 0;
-				return emptySeats >= minEmptySeats;
-			});
-		}
-
-		// 4. Lọc theo nhà xe
-		if (passengerIds.length > 0) {
-			filtered = filtered.filter((trip) => passengerIds.includes(trip.passengerId));
-		}
-
-		// 5. Lọc theo loại ghế
-		if (seatType) {
-			filtered = filtered.filter((trip) => trip.vehicle?.type === seatType);
-		}
-
-		// 6. Lọc theo đánh giá trung bình
-		if (rating) {
-			filtered = filtered.filter((trip) => {
-				const passengerRates = trip.passenger?.passengerRate || [];
-				const avgRating = getAverageRating(passengerRates);
-				return avgRating >= rating;
-			});
-		}
-
-		// Cập nhật redux store
-		dispatch({
-			type: "GET_TRIP_PASSENGER",
-			listTripPassenger: filtered,
-		});
 	}, [filters, originalListTripPassenger, dispatch]);
 
 	// Xử lý khi chọn nhà xe (checkbox)
