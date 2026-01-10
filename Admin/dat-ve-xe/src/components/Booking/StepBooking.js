@@ -19,6 +19,7 @@ import {history} from "../../App";
 import {TICKET_BOOKING} from "../../redux/types/TicketTypes";
 import {USER_LOGIN} from "../../util/settings/config";
 import {OPEN_DRAWER} from "../../redux/types/DrawerTypes";
+import {DOMAIN, TOKEN} from "../../util/settings/config";
 import MapPoint from "../Map/MapPoint";
 import moment from "moment";
 
@@ -57,7 +58,7 @@ function StepBookingSeat(props) {
 
 	React.useEffect(() => {
 		if (tripPassenger?.id) {
-			fetch(`http://localhost:8000/api/v1/tripseat/${tripPassenger.id}`)
+			fetch(`${DOMAIN}tripseat/${tripPassenger.id}`)
 				.then((res) => res.json())
 				.then((data) => {
 					setTripSeats(data); // Giả sử API trả về danh sách ghế dạng mảng
@@ -215,7 +216,6 @@ function StepBookingSeat(props) {
 								>
 									Tiếp tục
 								</Button>
-								
 							</div>
 						</div>
 					</div>

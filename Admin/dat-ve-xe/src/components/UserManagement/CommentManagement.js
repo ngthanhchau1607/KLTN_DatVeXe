@@ -6,7 +6,7 @@ import {HomeOutlined, MessageOutlined} from "@ant-design/icons";
 import moment from "moment";
 import {history} from "../../App";
 import axios from "axios";
-import {TOKEN, USER_LOGIN} from "../../util/settings/config";
+import {DOMAIN, TOKEN, USER_LOGIN} from "../../util/settings/config";
 
 const {Panel} = Collapse;
 
@@ -26,7 +26,7 @@ export default function CommentManagement() {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const [commentRes, rateRes] = await Promise.all([axios.get("http://localhost:8000/api/v1/comment"), axios.get("http://localhost:8000/api/v1/rate")]);
+				const [commentRes, rateRes] = await Promise.all([axios.get(`${DOMAIN}comment`), axios.get(`${DOMAIN}rate`)]);
 
 				setComments(commentRes.data);
 				setRates(rateRes.data);
@@ -59,21 +59,21 @@ export default function CommentManagement() {
 		try {
 			// 1. Gọi API cập nhật rate
 			if (editedRateId) {
-				await axios.put(`http://localhost:8000/api/v1/rate/${editedRateId}`, {
+				await axios.put(`${DOMAIN}rate/${editedRateId}`, {
 					numberRate: editedRate,
 				});
 				console.log("✅ Đã cập nhật rate:", editedRateId);
 			}
 
 			// 2. Gọi API cập nhật comment
-			await axios.put(`http://localhost:8000/api/v1/comment/${item.id}`, {
+			await axios.put(`${DOMAIN}comment/${item.id}`, {
 				content: editedContent,
 			});
 			console.log("✅ Đã cập nhật comment:", item.id);
 
 			message.success("Cập nhật thành công!");
 
-			const [commentRes, rateRes] = await Promise.all([axios.get("http://localhost:8000/api/v1/comment"), axios.get("http://localhost:8000/api/v1/rate")]);
+			const [commentRes, rateRes] = await Promise.all([axios.get(`${DOMAIN}comment`), axios.get(`${DOMAIN}rate`)]);
 			setComments(commentRes.data);
 			setRates(rateRes.data);
 
@@ -102,19 +102,19 @@ export default function CommentManagement() {
 			onOk: async () => {
 				try {
 					// Xóa comment
-					await axios.delete(`http://localhost:8000/api/v1/comment/${comment.id}`);
+					await axios.delete(`${DOMAIN}comment/${comment.id}`);
 					console.log("✅ Đã xóa comment:", comment.id);
 
 					// Xóa rate nếu có
 					if (rate?.id) {
-						await axios.delete(`http://localhost:8000/api/v1/rate/${rate.id}`);
+						await axios.delete(`${DOMAIN}rate/${rate.id}`);
 						console.log("✅ Đã xóa rate:", rate.id);
 					}
 
 					message.success("Đã xóa đánh giá và bình luận");
 
 					// Cập nhật lại danh sách
-					const [commentRes, rateRes] = await Promise.all([axios.get("http://localhost:8000/api/v1/comment"), axios.get("http://localhost:8000/api/v1/rate")]);
+					const [commentRes, rateRes] = await Promise.all([axios.get(`${DOMAIN}comment`), axios.get(`${DOMAIN}rate`)]);
 					setComments(commentRes.data);
 					setRates(rateRes.data);
 				} catch (error) {

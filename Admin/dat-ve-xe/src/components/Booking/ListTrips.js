@@ -8,6 +8,7 @@ import {styled} from "@mui/material/styles";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import IconButton from "@mui/material/IconButton";
 import StepBooking from "./StepBooking";
+import {DOMAIN, TOKEN} from "../../util/settings/config";
 import _ from "lodash";
 import {useDispatch, useSelector} from "react-redux";
 import {getImgVehicleAction} from "../../redux/actions/bookingAction";
@@ -51,7 +52,7 @@ export default function ListTrips(props) {
 		listTripPassenger.forEach(async (item) => {
 			if (item.status === "depart") {
 				try {
-					const res = await fetch(`http://localhost:8000/api/v1/tripseat/${item.id}`);
+					const res = await fetch(`${DOMAIN}tripseat/${item.id}`);
 					const data = await res.json();
 					setSeatVehicleMap((prev) => ({
 						...prev,

@@ -1,4 +1,5 @@
 import React, {useState, useRef, useEffect} from "react";
+import {DOMAIN1} from "../untils/setting";
 
 // Gợi ý câu hỏi
 const suggestedQuestions = ["Chính sách hoàn/hủy vé như thế nào?", "Các chương trình khuyến mãi?", "Lịch trình chuyến xe ngày mai?"];
@@ -76,7 +77,7 @@ const ChatBox = () => {
 
 			// Trường hợp câu hỏi thứ 2: Các chương trình khuyến mãi
 			if (msg === "Các chương trình khuyến mãi?") {
-				const response = await fetch("http://localhost:8000/api/v1/voucher");
+				const response = await fetch(`${DOMAIN1}voucher`);
 				if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 				const data = await response.json();
 
@@ -111,7 +112,7 @@ const ChatBox = () => {
 				console.log("Hôm nay:", today.toLocaleDateString("vi-VN"));
 				console.log("Ngày mai là:", dateStr);
 
-				fetch("http://localhost:8000/api/v1/trips/tripbydate", {
+				fetch(`${DOMAIN1}trips/tripbydate`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
@@ -157,7 +158,7 @@ const ChatBox = () => {
 
 				console.log("Ngày hôm nay là:", dateStr);
 
-				fetch("http://localhost:8000/api/v1/trips/tripbydate", {
+				fetch(`${DOMAIN1}trips/tripbydate`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
@@ -193,7 +194,7 @@ const ChatBox = () => {
 
 			// Gửi lên backend
 			const fullMessage = `${SYSTEM_PROMPT}\n\nUser: ${msg}\nAssistant:`;
-			const response = await fetch("http://localhost:8000/api/v1/openai/chat", {
+			const response = await fetch(`${DOMAIN1}openai/chat`, {
 				method: "POST",
 				headers: {"Content-Type": "application/json"},
 				body: JSON.stringify({message: fullMessage}),

@@ -13,17 +13,6 @@ export default function ForgotPasswordForm({onBackToLogin}) {
 		}),
 		onSubmit: async (values, {resetForm}) => {
 			try {
-				// 👉 TODO: Gọi API quên mật khẩu tại đây
-				/*
-        await fetch("http://localhost:8000/api/v1/users/forgot-password", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: values.email }),
-        });
-        */
-
 				message.success("Yêu cầu khôi phục mật khẩu đã được gửi.");
 				resetForm();
 				onBackToLogin(); // quay về login sau khi gửi

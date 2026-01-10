@@ -4,6 +4,7 @@ import {Content} from "antd/lib/layout/layout";
 import {useDispatch} from "react-redux";
 import {useSelector} from "react-redux";
 import axios from "axios";
+import {DOMAIN, TOKEN} from "../../util/settings/config";
 import moment from "moment";
 import {getProvinceAction} from "../../redux/actions/bookingAction";
 
@@ -30,7 +31,7 @@ export default function AdminTicketStatics() {
 	useEffect(() => {
 		const fetchTickets = async () => {
 			try {
-				const res = await axios.get("http://localhost:8000/api/v1/ticket");
+				const res = await axios.get(`${DOMAIN}ticket`);
 				setTickets(res.data);
 				setFilteredTickets(res.data);
 			} catch (error) {

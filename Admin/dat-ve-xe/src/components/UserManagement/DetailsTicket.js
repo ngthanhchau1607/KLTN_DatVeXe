@@ -1,6 +1,7 @@
 import {Badge, Rate, Input, Button, message, Spin} from "antd";
 import moment from "moment";
 import {useEffect, useState} from "react";
+import {DOMAIN, TOKEN} from "../../util/settings/config";
 import axios from "axios";
 
 export default function DetailsTicket({ticket}) {
@@ -23,7 +24,7 @@ export default function DetailsTicket({ticket}) {
 
 		const fetchData = async () => {
 			try {
-				const [commentRes, rateRes] = await Promise.all([axios.get(`http://localhost:8000/api/v1/comment?passengerId=${passengerId}`), axios.get(`http://localhost:8000/api/v1/rate/${passengerId}`)]);
+				const [commentRes, rateRes] = await Promise.all([axios.get(`${DOMAIN}comment?passengerId=${passengerId}`), axios.get(`${DOMAIN}rate/${passengerId}`)]);
 
 				const userComment = commentRes.data.find((c) => c.userId === userId);
 				const userRate = rateRes.data.find((r) => r.userId === userId);
@@ -45,12 +46,13 @@ export default function DetailsTicket({ticket}) {
 
 	const handleSubmit = async () => {
 		try {
-			await axios.post("http://localhost:8000/api/v1/rate", {
+			await axios.post(`${DOMAIN}rate`, {
 				numberRate: rating,
 				userId,
 				passengerId,
 			});
-			await axios.post("http://localhost:8000/api/v1/comment", {
+
+			await axios.post(`${DOMAIN}comment`, {
 				content: comment,
 				userId,
 				passengerId,

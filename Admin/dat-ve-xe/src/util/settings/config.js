@@ -1,4 +1,4 @@
-export const DOMAIN = "http://localhost:8000/api/v1/";
+export const DOMAIN = "https://api-booking-ticket-ys4j.onrender.com/api/v1/";
 export const TOKEN = "token";
 export const USER_LOGIN = "USER_LOGIN";
 export const STATUS_CODE = {

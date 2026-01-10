@@ -5,6 +5,7 @@ import {getAllPassenger} from "../../redux/actions/passengerAction";
 import axios from "axios";
 import moment from "moment";
 import {CLOSE_DRAWER} from "../../redux/types/DrawerTypes";
+import {DOMAIN} from "../../util/settings/config";
 
 const {Option} = Select;
 
@@ -54,7 +55,9 @@ export default function AddVoucher({onSuccess}) {
 				endTime: formState.endTime ? formState.endTime.toISOString() : null,
 			};
 
-			await axios.post("http://localhost:8000/api/v1/voucher", payload);
+			const url = `${DOMAIN}voucher`; // DOMAIN đã kết thúc bằng /api/v1/
+
+			await axios.post(url, payload);
 
 			message.success(" Tạo voucher thành công!");
 

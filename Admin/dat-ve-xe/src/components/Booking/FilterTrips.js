@@ -5,6 +5,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Remove from "@mui/icons-material/Remove";
 import {useDispatch, useSelector} from "react-redux";
 import {getTripPassengersByTripsAction} from "../../redux/actions/tripAction";
+import {DOMAIN, TOKEN} from "../../util/settings/config";
 import _ from "lodash";
 import {CANCEL_SORT_TIME} from "../../redux/types/BookingTypes";
 
@@ -29,7 +30,7 @@ export default function FilterTrips(props) {
 
 	const getTripSeatsByTripId = async (tripId) => {
 		try {
-			const res = await axios.get(`http://localhost:8000/api/v1/tripseat/${tripId}`);
+			const res = await axios.get(`${DOMAIN}tripseat/${tripId}`);
 
 			// Lọc ra những ghế còn trống
 			const availableSeats = res.data.filter((seat) => seat.status === "available");

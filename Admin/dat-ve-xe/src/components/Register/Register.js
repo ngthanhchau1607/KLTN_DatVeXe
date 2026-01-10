@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {Form, Input, Button, message} from "antd";
 import {useFormik} from "formik";
 import * as Yup from "yup";
+import {DOMAIN, TOKEN} from "../../util/settings/config";
 import {useDispatch} from "react-redux";
 import axios from "axios";
 
@@ -47,7 +48,7 @@ export default function Register(props) {
 				// Gửi OTP lên server
 				try {
 					setIsLoading(true);
-					const response = await axios.post("http://localhost:8000/api/v1/users/otp", {
+					const response = await axios.post(`${DOMAIN}users/otp`, {
 						email: values.email,
 					});
 

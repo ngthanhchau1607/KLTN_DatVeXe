@@ -3,6 +3,7 @@ import {Form, Input, Button, Select, message} from "antd";
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import {useDispatch, useSelector} from "react-redux";
+import {DOMAIN, TOKEN} from "../../util/settings/config";
 import axios from "axios";
 
 import {getDetailUserAction, getUserAction} from "../../redux/actions/UserAction";
@@ -43,7 +44,7 @@ export default function EditUser(props) {
 					numberPhone: values.numberPhone,
 				};
 
-				const response = await axios.put(`http://localhost:8000/api/v1/users/update/${props.id}`, payload);
+				const response = await axios.put(`${DOMAIN}users/update/${props.id}`, payload);
 
 				console.log("✅ Cập nhật thành công:", response.data);
 

@@ -4,7 +4,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {CheckCircleIcon} from "@heroicons/react/solid";
 import {bookingTicketAction} from "../redux/actions/bookingAction";
 import axios from "axios";
+
 import {TICKET_BOOKING} from "../redux/types/TicketTypes";
+import {DOMAIN} from "../util/settings/config";
 
 const PaymentSuccess = () => {
 	const history = useHistory();
@@ -36,7 +38,7 @@ const PaymentSuccess = () => {
 			console.log("📦 Data gửi lên BE:", ticketBooking);
 
 			try {
-				const response = await axios.post("http://localhost:8000/api/v1/ticket/booking", ticketBooking);
+				const response = await axios.post(`${DOMAIN}ticket/booking`, ticketBooking);
 				console.log("✅ Đặt vé thành công:", response.data);
 			} catch (error) {
 				console.error("❌ Lỗi khi đặt vé:", error?.response?.data || error.message);

@@ -5,6 +5,7 @@ import {useFormik} from "formik";
 import * as Yup from "yup";
 import {useDispatch, useSelector} from "react-redux";
 import {history} from "../../App";
+import {DOMAIN, TOKEN} from "../../util/settings/config";
 import "../../Sass/css/user.css";
 import axios from "axios";
 
@@ -37,7 +38,7 @@ export default function ChangePassword() {
 					return;
 				}
 
-				const response = await axios.put(`http://localhost:8000/api/v1/users/change/${userId}`, {
+				const response = await axios.put(`${DOMAIN}users/change/${userId}`, {
 					oldPassword: values.oldPassword,
 					newPassword: values.newPassword,
 				});

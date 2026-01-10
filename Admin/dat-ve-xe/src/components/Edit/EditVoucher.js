@@ -3,6 +3,7 @@ import {Form, Button, Col, Row, Input, Select, DatePicker, message} from "antd";
 import moment from "moment";
 import axios from "axios";
 import {useDispatch, useSelector} from "react-redux";
+import {DOMAIN, TOKEN} from "../../util/settings/config";
 import {CLOSE_DRAWER} from "../../redux/types/DrawerTypes";
 
 export default function EditVoucher({id, onSuccess}) {
@@ -21,7 +22,7 @@ export default function EditVoucher({id, onSuccess}) {
 	useEffect(() => {
 		const fetchVoucher = async () => {
 			try {
-				const res = await axios.get(`http://localhost:8000/api/v1/voucher/${id}`);
+				const res = await axios.get(`${DOMAIN}voucher/${id}`);
 				const data = res.data.data;
 
 				setFormState({
@@ -68,7 +69,7 @@ export default function EditVoucher({id, onSuccess}) {
 				endTime: formState.endTime.toISOString(),
 			};
 
-			await axios.put(`http://localhost:8000/api/v1/voucher/${id}`, payload);
+			await axios.put(`${DOMAIN}voucher/${id}`, payload);
 			message.success("Cập nhật voucher thành công");
 			if (onSuccess) onSuccess();
 			dispatch({type: CLOSE_DRAWER});

@@ -3,7 +3,7 @@ import "../Sass/css/Payment.css";
 import {message} from "antd";
 import {Card, Radio, Input, Space, Collapse, Button} from "antd";
 import {useDispatch, useSelector} from "react-redux";
-import {USER_LOGIN} from "../util/settings/config";
+import {DOMAIN, USER_LOGIN} from "../util/settings/config";
 import moment from "moment";
 import {Redirect} from "react-router-dom";
 import {getDetailTripPassengerAction} from "../redux/actions/tripAction";
@@ -15,6 +15,7 @@ import axios from "axios";
 import {TICKET_BOOKING} from "../redux/types/TicketTypes";
 import {Divider, Typography} from "antd";
 import {Link} from "react-router-dom";
+
 const {Text} = Typography;
 
 export default function Payment(props) {
@@ -33,7 +34,7 @@ export default function Payment(props) {
 		}
 
 		try {
-			const response = await axios.post("http://localhost:8000/api/v1/voucher/check-used", {
+			const response = await axios.post(`${DOMAIN}voucher/check-used`, {
 				voucherCode: voucherCode.trim(),
 				userId: userLogin.id,
 			});
@@ -137,7 +138,7 @@ export default function Payment(props) {
 		});
 
 		try {
-			const response = await axios.post("http://localhost:8000/api/v1/payment", {
+			const response = await axios.post(`${DOMAIN}payment`, {
 				totalAmount: ticketBooking.totalAmount,
 				passenger: tripPassengerDetail.passenger.name,
 			});

@@ -4,6 +4,7 @@ import {useFormik} from "formik";
 import * as Yup from "yup";
 import {useDispatch} from "react-redux";
 import {LoginAction} from "../../redux/actions/UserAction";
+import {DOMAIN, TOKEN} from "../../util/settings/config";
 import axios from "axios";
 
 export default function Login(props) {
@@ -77,7 +78,7 @@ export default function Login(props) {
 			if (!isOTPSent) {
 				try {
 					setIsLoading(true);
-					const response = await axios.post("http://localhost:8000/api/v1/users/otp", {
+					const response = await axios.post(`${DOMAIN}users/otp`, {
 						email: values.email,
 					});
 					message.success("Mã OTP đã được gửi đến email của bạn!");
@@ -118,7 +119,7 @@ export default function Login(props) {
 		onSubmit: async (values) => {
 			try {
 				setIsLoading(true);
-				await axios.post("http://localhost:8000/api/v1/users/reset-password", {
+				await axios.post(`${DOMAIN}users/reset-password`, {
 					email: emailForReset,
 					newPassword: values.newPassword,
 				});

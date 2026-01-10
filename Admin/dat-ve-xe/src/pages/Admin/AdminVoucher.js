@@ -6,6 +6,7 @@ import {useDispatch} from "react-redux";
 import axios from "axios";
 import AddVoucher from "../../components/Add/AddVoucher";
 import EditVoucher from "../../components/Edit/EditVoucher";
+import {DOMAIN1} from "../../untils/setting";
 
 const {Content} = Layout;
 
@@ -17,7 +18,7 @@ export default function AdminVoucher() {
 	const fetchVouchers = async () => {
 		setLoading(true);
 		try {
-			const res = await axios.get("http://localhost:8000/api/v1/voucher");
+			const res = await axios.get(`${DOMAIN1}voucher`);
 			let data = res.data.data;
 
 			setVouchers(data);
@@ -31,7 +32,7 @@ export default function AdminVoucher() {
 
 	const deleteVoucher = async (id) => {
 		try {
-			await axios.delete(`http://localhost:8000/api/v1/voucher/${id}`);
+			await axios.delete(`${DOMAIN1}voucher/${id}`);
 			message.success("Xoá voucher thành công");
 			fetchVouchers();
 		} catch (err) {
