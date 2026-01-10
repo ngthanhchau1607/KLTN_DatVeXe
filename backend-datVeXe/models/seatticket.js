@@ -20,6 +20,9 @@ module.exports = (sequelize, DataTypes) => {
 		{
 			sequelize,
 			modelName: "SeatTicket",
+			tableName: "seattickets",
+			freezeTableName: true,
+			timestamps: true,
 		}
 	);
 	return SeatTicket;

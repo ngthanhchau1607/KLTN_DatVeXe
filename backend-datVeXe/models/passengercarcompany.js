@@ -37,7 +37,10 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		{
 			sequelize,
-			modelName: "PassengerCarCompany",
+			modelName: "PassengerCarCompany", // tên model
+			tableName: "passengercarcompanies", // ✅ tên bảng thật trong DB (lowercase)
+			freezeTableName: true, // ✅ không cho Sequelize pluralize
+			timestamps: true,
 		}
 	);
 	return PassengerCarCompany;

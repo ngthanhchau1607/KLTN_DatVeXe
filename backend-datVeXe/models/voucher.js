@@ -44,6 +44,9 @@ module.exports = (sequelize, DataTypes) => {
 		{
 			sequelize,
 			modelName: "Voucher",
+			tableName: "vouchers",
+			freezeTableName: true,
+			timestamps: true,
 		}
 	);
 

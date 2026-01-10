@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
 			this.belongsTo(Point, {foreignKey: "pointId", as: "point", onDelete: "cascade"});
 			this.belongsTo(TripPassenger, {foreignKey: "tripPassengerId", as: "tripTimePoint", onDelete: "cascade"});
 			this.hasMany(PointTicket, {foreignKey: "timepointId", as: "timepointTicket", onDelete: "cascade"});
-			TripPassenger.hasMany(TimePoint, { foreignKey: "tripPassengerId", as: "timepoints" });
+			TripPassenger.hasMany(TimePoint, {foreignKey: "tripPassengerId", as: "timepoints"});
 		}
 	}
 	TimePoint.init(
@@ -24,7 +24,9 @@ module.exports = (sequelize, DataTypes) => {
 		{
 			sequelize,
 			modelName: "TimePoint",
-			
+			tableName: "timepoints",
+			freezeTableName: true,
+			timestamps: true,
 		}
 	);
 	return TimePoint;

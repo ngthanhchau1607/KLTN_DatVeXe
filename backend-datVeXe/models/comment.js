@@ -25,7 +25,9 @@ module.exports = (sequelize, DataTypes) => {
 		{
 			sequelize,
 			modelName: "Comment",
-			
+			tableName: "comments",
+			freezeTableName: true,
+			timestamps: true,
 		}
 	);
 	return Comment;

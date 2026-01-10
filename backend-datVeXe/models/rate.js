@@ -1,5 +1,5 @@
 "use strict";
-const { Model } = require("sequelize");
+const {Model} = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
 	class Rate extends Model {
@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
 		 * This method is not a part of Sequelize lifecycle.
 		 * The `models/index.js` file will call this method automatically.
 		 */
-		static associate({ PassengerCarCompany, User, Comment }) {
+		static associate({PassengerCarCompany, User, Comment}) {
 			this.belongsTo(User, {
 				foreignKey: "userId",
 				as: "userRate",
@@ -31,6 +31,9 @@ module.exports = (sequelize, DataTypes) => {
 		{
 			sequelize,
 			modelName: "Rate",
+			tableName: "rates",
+			freezeTableName: true,
+			timestamps: true,
 		}
 	);
 
