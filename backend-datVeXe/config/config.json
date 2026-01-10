@@ -9,17 +9,19 @@
     },
    
     "test": {
-        "username": "root",
-        "password": null,
-        "database": "database_test",
-        "host": "127.0.0.1",
+         "username": "root",
+        "password": "ohxukOZdIpvrBSsMXJXLKVhXXCzfnrTv",
+        "database": "datvexe",
+        "host": "switchyard.proxy.rlwy.net",
+        "port": 28365, 
         "dialect": "mysql"
     },
     "production": {
         "username": "root",
-        "password": null,
-        "database": "database_production",
-        "host": "127.0.0.1",
+        "password": "ohxukOZdIpvrBSsMXJXLKVhXXCzfnrTv",
+        "database": "datvexe",
+        "host": "switchyard.proxy.rlwy.net",
+        "port": 28365, 
         "dialect": "mysql"
     }
 }
