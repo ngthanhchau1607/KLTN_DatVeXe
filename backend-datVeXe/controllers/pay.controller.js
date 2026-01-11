@@ -12,7 +12,7 @@ const paymentController = async (req1, res2) => {
 		var requestId = partnerCode + new Date().getTime();
 		var orderId = requestId;
 		var orderInfo = `Đặt vé xe  ${passenger}`;
-		var redirectUrl = "http://localhost:3000/payment-success";
+		var redirectUrl = "https://booking-ticket-online.vercel.app//payment-success";
 		var ipnUrl = "https://6d82114d0dae.ngrok-free.app/api/v1/payment/callback"; // Thay đổi URL callback
 		var amount = totalAmount;
 		var requestType = "captureWallet";
